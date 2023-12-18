@@ -30,11 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.serCOM = new System.IO.Ports.SerialPort(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.sendtext = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -43,29 +43,32 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cboComport = new System.Windows.Forms.ComboBox();
-            this.cboBaudrate = new System.Windows.Forms.ComboBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.buttonConnect = new System.Windows.Forms.Button();
+            this.cboBaudrate = new System.Windows.Forms.ComboBox();
+            this.cboComport = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboBox1
             // 
-            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.comboBox1.BackColor = System.Drawing.Color.White;
             this.comboBox1.DropDownHeight = 200;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.IntegralHeight = false;
-            this.comboBox1.Location = new System.Drawing.Point(118, 128);
+            this.comboBox1.Location = new System.Drawing.Point(118, 135);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(253, 24);
+            this.comboBox1.Size = new System.Drawing.Size(256, 24);
             this.comboBox1.TabIndex = 2;
+            // 
+            // serCOM
+            // 
+            this.serCOM.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serCOM_receive);
             // 
             // label1
             // 
@@ -82,7 +85,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(26, 128);
+            this.label2.Location = new System.Drawing.Point(26, 135);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 20);
             this.label2.TabIndex = 4;
@@ -93,23 +96,24 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(26, 88);
+            this.label3.Location = new System.Drawing.Point(26, 77);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(41, 20);
             this.label3.TabIndex = 5;
             this.label3.Text = "Text";
             // 
-            // textBox1
+            // sendtext
             // 
-            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.textBox1.Location = new System.Drawing.Point(118, 88);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(253, 22);
-            this.textBox1.TabIndex = 6;
+            this.sendtext.BackColor = System.Drawing.Color.White;
+            this.sendtext.Location = new System.Drawing.Point(118, 77);
+            this.sendtext.Multiline = true;
+            this.sendtext.Name = "sendtext";
+            this.sendtext.Size = new System.Drawing.Size(256, 40);
+            this.sendtext.TabIndex = 6;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(412, 102);
+            this.button1.Location = new System.Drawing.Point(447, 91);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(114, 46);
             this.button1.TabIndex = 7;
@@ -120,29 +124,30 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(9, 18);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(6, 34);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 20);
+            this.label4.Size = new System.Drawing.Size(138, 25);
             this.label4.TabIndex = 8;
-            this.label4.Text = "Nhiệt độ:";
+            this.label4.Text = "Nhiệt độ: ... °C";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(9, 57);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(193, 34);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 20);
+            this.label5.Size = new System.Drawing.Size(145, 25);
             this.label5.TabIndex = 9;
-            this.label5.Text = "Độ ẩm:";
+            this.label5.Text = "Độ ẩm: ... %RH";
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(9, 96);
+            this.label6.Location = new System.Drawing.Point(9, 120);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(87, 20);
             this.label6.TabIndex = 10;
@@ -153,7 +158,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(8, 131);
+            this.label7.Location = new System.Drawing.Point(9, 159);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 20);
             this.label7.TabIndex = 11;
@@ -183,117 +188,119 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.CausesValidation = false;
             this.groupBox1.Controls.Add(this.textBox5);
             this.groupBox1.Controls.Add(this.textBox4);
-            this.groupBox1.Controls.Add(this.textBox3);
-            this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(17, 184);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(17, 175);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(294, 199);
+            this.groupBox1.Size = new System.Drawing.Size(357, 208);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.groupBox1.Text = "Result";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(101, 152);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(139, 30);
+            this.textBox5.TabIndex = 15;
+            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(101, 113);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(139, 30);
+            this.textBox4.TabIndex = 14;
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button3);
-            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.buttonConnect);
             this.groupBox2.Controls.Add(this.cboBaudrate);
             this.groupBox2.Controls.Add(this.cboComport);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Location = new System.Drawing.Point(330, 184);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(393, 175);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(347, 199);
+            this.groupBox2.Size = new System.Drawing.Size(366, 208);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
-            // 
-            // cboComport
-            // 
-            this.cboComport.FormattingEnabled = true;
-            this.cboComport.Location = new System.Drawing.Point(193, 31);
-            this.cboComport.Name = "cboComport";
-            this.cboComport.Size = new System.Drawing.Size(121, 24);
-            this.cboComport.TabIndex = 14;
-            // 
-            // cboBaudrate
-            // 
-            this.cboBaudrate.FormattingEnabled = true;
-            this.cboBaudrate.Location = new System.Drawing.Point(193, 75);
-            this.cboBaudrate.Name = "cboBaudrate";
-            this.cboBaudrate.Size = new System.Drawing.Size(121, 24);
-            this.cboBaudrate.TabIndex = 15;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(101, 15);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(139, 22);
-            this.textBox2.TabIndex = 12;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(101, 57);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(139, 22);
-            this.textBox3.TabIndex = 13;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(101, 96);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(139, 22);
-            this.textBox4.TabIndex = 14;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(101, 128);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(139, 22);
-            this.textBox5.TabIndex = 15;
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.Lime;
-            this.button2.Location = new System.Drawing.Point(23, 139);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(145, 43);
-            this.button2.TabIndex = 16;
-            this.button2.Text = "Connected";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.groupBox2.Text = "Serial connection";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.White;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.ForeColor = System.Drawing.Color.Red;
-            this.button3.Location = new System.Drawing.Point(183, 139);
+            this.button3.Location = new System.Drawing.Point(196, 139);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(145, 43);
+            this.button3.Size = new System.Drawing.Size(164, 43);
             this.button3.TabIndex = 17;
             this.button3.Text = "Exit";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // buttonConnect
+            // 
+            this.buttonConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonConnect.ForeColor = System.Drawing.Color.Lime;
+            this.buttonConnect.Location = new System.Drawing.Point(23, 139);
+            this.buttonConnect.Name = "buttonConnect";
+            this.buttonConnect.Size = new System.Drawing.Size(167, 43);
+            this.buttonConnect.TabIndex = 16;
+            this.buttonConnect.Text = "Connected";
+            this.buttonConnect.UseVisualStyleBackColor = true;
+            this.buttonConnect.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // cboBaudrate
+            // 
+            this.cboBaudrate.FormattingEnabled = true;
+            this.cboBaudrate.Location = new System.Drawing.Point(193, 75);
+            this.cboBaudrate.Name = "cboBaudrate";
+            this.cboBaudrate.Size = new System.Drawing.Size(121, 28);
+            this.cboBaudrate.TabIndex = 15;
+            this.cboBaudrate.SelectedIndexChanged += new System.EventHandler(this.cboBaudrate_SelectedIndexChanged);
+            // 
+            // cboComport
+            // 
+            this.cboComport.FormattingEnabled = true;
+            this.cboComport.Location = new System.Drawing.Point(193, 31);
+            this.cboComport.Name = "cboComport";
+            this.cboComport.Size = new System.Drawing.Size(121, 28);
+            this.cboComport.TabIndex = 14;
+            this.cboComport.SelectedIndexChanged += new System.EventHandler(this.cboComport_SelectedIndexChanged);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(618, 91);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(114, 46);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Clear";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.ClientSize = new System.Drawing.Size(689, 395);
+            this.ClientSize = new System.Drawing.Size(771, 395);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.sendtext);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -312,11 +319,11 @@
 
         #endregion
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.IO.Ports.SerialPort serialPort1;
+        private System.IO.Ports.SerialPort serCOM;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox sendtext;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
@@ -326,14 +333,13 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ComboBox cboBaudrate;
         private System.Windows.Forms.ComboBox cboComport;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox4;
     }
 }
 

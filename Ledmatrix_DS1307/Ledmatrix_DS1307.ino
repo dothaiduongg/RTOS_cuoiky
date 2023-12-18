@@ -21,6 +21,8 @@
 #define CS_PIN    5 // or SS
 
 
+
+
 #include "DHT.h"
 #define DHTPIN 23   
 #define DHTTYPE DHT11  
@@ -177,38 +179,49 @@ void loop(void)
   static uint8_t  display = 0;  // current display mode
   static bool flasher = false;  // seconds passing flasher
 
+  String dulieu = "";
+  while(Serial.available()>0)
+  {
+    char c =Serial.read();
+    dulieu += c;
+    delay(5);
+  }
+  dulieu.trim();
+  Message
+
   P.displayAnimate();
 
   if (P.getZoneStatus(0))
   {
     switch (display)
     {
-      case 0: // Temperature deg C
+      case 0: // Day of the week
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         dow2str(dow, szMesg, MAX_MESG);
         break;
 
-      case 1: // Relative Humidity
+      case 1: // Calendar
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getDate(szMesg);
         break;
 
-      case 2: // day of week
+      case 2: // Temperature deg C
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getTemperatur(szMesg);
         break;
 
-      case 3:  // Calendar
+      case 3:  // Relative Humidity
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getHumidit(szMesg);
         break;
 
-      default: // Relative Humidity
+      default: // Text
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+
         strcpy(szMesg, Message);
         display = 0;
         break;
