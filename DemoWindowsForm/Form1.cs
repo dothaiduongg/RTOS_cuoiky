@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using System.Net.NetworkInformation;
 
 namespace DemoWindowsForm
 {
@@ -17,9 +18,10 @@ namespace DemoWindowsForm
 
         SerialPort serialPort;
 
-        double temperature = 0, humidity = 0;
-        //double time = 0, day = 0, dow = 0;
-        bool updateData  = false;
+        double temperature = 0, humidity = 0; 
+            string dow;
+        //double time = 0, day = 0 ;
+        bool updateData = false;
         public Form1()
         {
             InitializeComponent();
@@ -206,12 +208,13 @@ namespace DemoWindowsForm
             sbyte index0f_startDataCharacter = (sbyte)data.IndexOf("@");
             sbyte index0fA = (sbyte)data.IndexOf("A");      //day of week
             sbyte index0fB = (sbyte)data.IndexOf("B");      //day 
-            //sbyte index0fC = (sbyte)data.IndexOf("C");      //temperature
-            //sbyte index0fD = (sbyte)data.IndexOf("D");      //humidity
-            //sbyte index0fE = (sbyte)data.IndexOf("E");      
+            sbyte index0fC = (sbyte)data.IndexOf("C");      //month
+            sbyte index0fD = (sbyte)data.IndexOf("D");      //year
+            sbyte index0fE = (sbyte)data.IndexOf("E");      //temperature
+            sbyte index0fF = (sbyte)data.IndexOf("F");      //humidity
 
             // if character "A", "B" and "@" exxist in the data Package
-            if (index0fA != -1 && index0fB != -1 /*&& index0fC != -1 && index0fD != -1 && index0fE != -1*/ && index0f_startDataCharacter != -1 )
+            if (index0fA != -1 && index0fB != -1 && index0fC != -1 && index0fD != -1 && index0fE != -1 && index0fF != -1  && index0f_startDataCharacter != -1 )
             {
                 try
                 {
@@ -226,19 +229,23 @@ namespace DemoWindowsForm
                     //    (index0fA - index0f_startDataCharacter) - 1);
 
                     //string str_day = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
-                    string str_temprature = data.Substring(index0f_startDataCharacter + 1,
-                            (index0fA - index0f_startDataCharacter) - 1);
-                    string str_humidity = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
-                    //string str_humidity = data.Substring(index0fD + 1, (index0fE - index0fD) - 1);
+                    string str_dow  = data.Substring(index0f_startDataCharacter + 1,
+                                                                           (index0fA - index0f_startDataCharacter) - 1);
+                    string str_day          = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
+                    string str_month        = data.Substring(index0fB + 1, (index0fC - index0fB) - 1);
+                    string str_year         = data.Substring(index0fC + 1, (index0fD - index0fC) - 1);
+                    string str_temperature  = data.Substring(index0fD + 1, (index0fE - index0fD) - 1);
+                    string str_humidity     = data.Substring(index0fE + 1, (index0fF - index0fE) - 1);
 
                     //time = Convert.ToDouble(str_time);
-                    //dow = Convert.ToDouble(str_dow);
+                    //dow = Convert.ToChar(str_dow);
                     //day = Convert.ToDouble(str_day);
-                    temperature = Convert.ToDouble(str_temprature);
+                    temperature = Convert.ToDouble(str_temperature);
                     humidity = Convert.ToDouble(str_humidity);
 
-
-
+                    //textBox1.Text = str_dow;
+                    label7.Text = String.Format("Ngày: {0}, {1} {2} {3} ", str_dow.ToString(),
+                        str_day.ToString(), str_month.ToString(), str_year.ToString());
                     updateData = true;
                 }
                 catch (Exception)
@@ -251,17 +258,23 @@ namespace DemoWindowsForm
                 updateData = false;
             }
         }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void Show_Data(object sender, EventArgs e)
         {
             if (updateData == true) {
 
-                
-                //label6.Text = String.Format("Thời gian: {0}", time.ToString());
-                //label7.Text = String.Format("Ngày: {0}, {0}", dow.ToString(), day.ToString());
 
+                //label6.Text = String.Format("Thời gian: {0}", time.ToString());
+                
                 label4.Text = String.Format("Nhiệt độ: {0}°C", temperature.ToString());
                 label5.Text = String.Format("Độ ẩm: {0}%RH", humidity.ToString());
             }
         }
+
     }
 }
