@@ -21,8 +21,6 @@
 #define CS_PIN    5 // or SS
 
 
-
-
 #include "DHT.h"
 #define DHTPIN 23   
 #define DHTTYPE DHT11  
@@ -35,11 +33,15 @@ MD_Parola P = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 #define PAUSE_TIME  0
 #define MAX_MESG  75
 
-int timezone = 7;
+int timezone = 0;
 int dst = 0;
 
 char Message[MAX_MESG+1] = { "GIA HUY" };
 char WeatherTh[MAX_MESG+1] = "";
+
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+String commandString = "";
 
 uint16_t  h, m, s;
 uint8_t dow;
@@ -50,6 +52,13 @@ String  year;
 char szTime[9];    // mm:ss\0
 char szsecond[4];    // ss
 char szMesg[MAX_MESG+1] = "";
+
+String Current_Dow;
+String Current_Day;
+String Current_Month;
+String Current_Year;
+char szDate[12];
+
 RTC_DS1307 rtc;
 uint8_t degC[] = { 6, 3, 3, 56, 68, 68, 68 }; // Deg C
 
@@ -90,6 +99,7 @@ DateTime now = rtc.now();
     psz[len] = '\0';
   }
 
+
   return(psz);
 }
 void getsec(char *psz)
@@ -105,6 +115,7 @@ void getTime(char *psz, bool f = true)
       m = now.minute();
       s = now.second();
   sprintf(psz, "%02d%c%02d", h, (f ? ':' : ' '), m);
+
 }
 
 void getDate(char *psz)
@@ -116,24 +127,41 @@ void getDate(char *psz)
       day = now.day();
       month = now.month();
   sprintf(psz, "%d %s %04d", day, mon2str(now.month(), szBuf, sizeof(szBuf)-1),now.year());
+
+  Current_Day = day;
+  Current_Month = mon2str(now.month(), szBuf, sizeof(szBuf)-1);
+  Current_Year = now.year();
+  Serial.print(Current_Day);        Serial.print("B");
+  Serial.print(Current_Month);      Serial.print("C");
+  Serial.print(Current_Year);       Serial.print("D");
+  
+
+  // Serial.print(Current_Day); 
+  // Serial.print("\n");
+
 }
 void getHumidit(char *psz)
 // Code for reading clock date
 {
         float h = dht.readHumidity();
-        strcpy(szMesg, "Humidity : ");
+        strcpy(szMesg, "Humi : ");
           dtostrf(h, 3, 1, WeatherTh);
           strcat(szMesg, WeatherTh);
           strcat(szMesg, " % RH");
+          Serial.print(h); Serial.print("F");
+          Serial.print("\n");
 }
 void getTemperatur(char *psz)
 // Code for reading clock date
 {
         float t = dht.readTemperature();
-        strcpy(szMesg, "Temperature : ");
+        strcpy(szMesg, "Temp : ");
           dtostrf(t, 3, 1, WeatherTh);
           strcat(szMesg, WeatherTh);
           strcat(szMesg, " $");
+          // Serial.print("@");
+          Serial.print(t); Serial.print("E");
+          
 }
 
 void setup(void)
@@ -178,34 +206,35 @@ void loop(void)
   static uint32_t lastTime = 0; // millis() memory
   static uint8_t  display = 0;  // current display mode
   static bool flasher = false;  // seconds passing flasher
-
-  String dulieu = "";
-  while(Serial.available()>0)
-  {
-    char c =Serial.read();
-    dulieu += c;
-    delay(5);
-  }
-  dulieu.trim();
-  Message
-
+ 
   P.displayAnimate();
 
   if (P.getZoneStatus(0))
   {
     switch (display)
     {
-      case 0: // Day of the week
+      case 0: // day of week
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         dow2str(dow, szMesg, MAX_MESG);
+
+
+        Current_Dow = dow2str(dow, szMesg, MAX_MESG);
+        Serial.print("@");
+        Serial.print(Current_Dow); Serial.print("A");
+        // Serial.print("\n");
         break;
 
       case 1: // Calendar
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getDate(szMesg);
+        // Current_Day = getDate(szMesg);
+        // Serial.print(Current_Day); Serial.print("D");
+        // Serial.print("\n");
+        // display++;
         break;
+
 
       case 2: // Temperature deg C
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
@@ -219,9 +248,8 @@ void loop(void)
         getHumidit(szMesg);
         break;
 
-      default: // Text
+      default: // text
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-
         strcpy(szMesg, Message);
         display = 0;
         break;
