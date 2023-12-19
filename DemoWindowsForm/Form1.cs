@@ -18,6 +18,7 @@ namespace DemoWindowsForm
         SerialPort serialPort;
 
         double temperature = 0, humidity = 0;
+        //double time = 0, day = 0, dow = 0;
         bool updateData  = false;
         public Form1()
         {
@@ -88,12 +89,6 @@ namespace DemoWindowsForm
         {
 
         }
-
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             if (!serCOM.IsOpen)
@@ -105,13 +100,14 @@ namespace DemoWindowsForm
                 serCOM.Open();
                 button3.Enabled = true;
                 enableControl();
-
+                MessageBox.Show("Success");
             }
             else
             {
                 buttonConnect.Text = "Connected";
                 serCOM.Close();
                 disenableControl();
+                MessageBox.Show("no success");
             }
 
 
@@ -145,11 +141,6 @@ namespace DemoWindowsForm
 
         }
 
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
@@ -169,8 +160,6 @@ namespace DemoWindowsForm
             comboBox1.Enabled = true;
             button1.Enabled = true;
             button2.Enabled = true;
-            textBox4.Enabled = true;
-            textBox5.Enabled = true;
             groupBox1.Enabled = true;
             //.Enabled = true;
         }
@@ -189,8 +178,6 @@ namespace DemoWindowsForm
             comboBox1.Enabled = false;
             button1.Enabled = false;
             button2.Enabled = false;
-            textBox4.Enabled = false;
-            textBox5.Enabled = false;
             groupBox1.Enabled = false;
             //groupBox2.Enabled = false;
         }
@@ -205,6 +192,8 @@ namespace DemoWindowsForm
 
         }
 
+
+
         private void serCOM_receive(object sender, SerialDataReceivedEventArgs e)
         {
             string dataIn = serCOM.ReadTo("\n");
@@ -215,19 +204,40 @@ namespace DemoWindowsForm
         private void Data_Parsing(string data)
         {
             sbyte index0f_startDataCharacter = (sbyte)data.IndexOf("@");
-            sbyte index0fA = (sbyte)data.IndexOf("A");
-            sbyte index0fB = (sbyte)data.IndexOf("B");
+            sbyte index0fA = (sbyte)data.IndexOf("A");      //day of week
+            sbyte index0fB = (sbyte)data.IndexOf("B");      //day 
+            //sbyte index0fC = (sbyte)data.IndexOf("C");      //temperature
+            //sbyte index0fD = (sbyte)data.IndexOf("D");      //humidity
+            //sbyte index0fE = (sbyte)data.IndexOf("E");      
 
             // if character "A", "B" and "@" exxist in the data Package
-            if (index0fA != -1 && index0fB != -1 && index0f_startDataCharacter != -1)
+            if (index0fA != -1 && index0fB != -1 /*&& index0fC != -1 && index0fD != -1 && index0fE != -1*/ && index0f_startDataCharacter != -1 )
             {
                 try
                 {
+                    //string str_time = data.Substring(index0f_startDataCharacter + 1,
+                    //    (index0fA - index0f_startDataCharacter) - 1);
+
+                    //string str_dow = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
+                    //string str_day = data.Substring(index0fB + 1, (index0fC - index0fB) - 1);
+                    //string str_temprature = data.Substring(index0fC + 1, (index0fD - index0fC) - 1);
+                    ////string str_humidity = data.Substring(index0fD + 1, (index0fE - index0fD) - 1);
+                    //string str_dow = data.Substring(index0f_startDataCharacter + 1,
+                    //    (index0fA - index0f_startDataCharacter) - 1);
+
+                    //string str_day = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
                     string str_temprature = data.Substring(index0f_startDataCharacter + 1,
-                        (index0fA - index0f_startDataCharacter) - 1);
+                            (index0fA - index0f_startDataCharacter) - 1);
                     string str_humidity = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
+                    //string str_humidity = data.Substring(index0fD + 1, (index0fE - index0fD) - 1);
+
+                    //time = Convert.ToDouble(str_time);
+                    //dow = Convert.ToDouble(str_dow);
+                    //day = Convert.ToDouble(str_day);
                     temperature = Convert.ToDouble(str_temprature);
                     humidity = Convert.ToDouble(str_humidity);
+
+
 
                     updateData = true;
                 }
@@ -245,9 +255,12 @@ namespace DemoWindowsForm
         {
             if (updateData == true) {
 
+                
+                //label6.Text = String.Format("Thời gian: {0}", time.ToString());
+                //label7.Text = String.Format("Ngày: {0}, {0}", dow.ToString(), day.ToString());
+
                 label4.Text = String.Format("Nhiệt độ: {0}°C", temperature.ToString());
                 label5.Text = String.Format("Độ ẩm: {0}%RH", humidity.ToString());
-
             }
         }
     }
