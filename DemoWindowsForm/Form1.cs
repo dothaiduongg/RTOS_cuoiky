@@ -70,11 +70,13 @@ namespace DemoWindowsForm
 
             if (!serCOM.IsOpen)
             {
-            string dulieu = sendtext.Text;
-            serCOM.Write("#text" + dulieu + "#\n");
+                MessageBox.Show("Serial isn't connect!");
             }
-
-
+            else
+            {
+            string dulieu = sendtext.Text;
+            serCOM.Write(dulieu);
+            }
         }
 
         private void label8_Click(object sender, EventArgs e)

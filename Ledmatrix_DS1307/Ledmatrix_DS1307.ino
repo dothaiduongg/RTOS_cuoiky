@@ -36,7 +36,7 @@ MD_Parola P = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 int timezone = 0;
 int dst = 0;
 
-char Message[MAX_MESG+1] = { "GIA HUY" };
+char Message[MAX_MESG+1] = {""};
 char WeatherTh[MAX_MESG+1] = "";
 
 String inputString = "";         // a string to hold incoming data
@@ -166,12 +166,52 @@ void getTemperatur(char *psz)
           
 }
 
+// void checkCommand()
+// {
+//   if(stringComplete)
+//   {
+//     stringComplete = false;
+//     getCommand();
+//     if(commandString.equals("TEXT"))
+//     {
+//       String text = getTextToPrint();
+
+
+//     }
+//   }
+// }
+
+// void getCommand()
+// {
+//   if(inputString.length()>0)
+//   {
+//      commandString = inputString.substring(1,5);
+//   }
+// }
+// String getTextToPrint()
+// {
+//   String Message = inputString.substring(5,inputString.length()-2);
+//   return Message;
+// }
+
+// void serialEvent() {
+//   while (Serial.available()) {
+//     // get the new byte:
+//     char inChar = (char)Serial.read();
+//     // add it to the inputString:
+//     inputString += inChar;
+//     // if the incoming character is a newline, set a flag
+//     // so the main loop can do something about it:
+//     if (inChar == '\n') {
+//       stringComplete = true;
+//     }
+//   }
+// }
 void setup(void)
 {
     Serial.begin(9600);
     delay(10);
 
-    // We start by connecting to a WiFi network
 
     if (! rtc.begin()) {
     Serial.println("RTC module is NOT found");
@@ -203,17 +243,13 @@ void setup(void)
   getTime(szTime);
 }
 
-// void dateweek(){
-
-// }
-
 
 void loop(void)
 {
   static uint32_t lastTime = 0; // millis() memory
   static uint8_t  display = 0;  // current display mode
   static bool flasher = false;  // seconds passing flasher
- 
+  String dulieu = "";
   P.displayAnimate();
 
 
@@ -257,8 +293,12 @@ void loop(void)
         break;
 
       default: // text
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-        strcpy(szMesg, Message);
+        if (Serial.available()>0)
+        {
+          dulieu = Serial.readStringUntil('\n');
+          P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+          strcpy(szMesg, dulieu.c_str());
+        }
         display = 0;
         break;
     }
