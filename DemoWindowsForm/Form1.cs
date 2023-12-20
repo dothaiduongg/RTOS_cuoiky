@@ -19,7 +19,7 @@ namespace DemoWindowsForm
         SerialPort serialPort;
 
         double temperature = 0, humidity = 0; 
-            string dow;
+        double day;
         //double time = 0, day = 0 ;
         bool updateData = false;
         public Form1()
@@ -214,7 +214,7 @@ namespace DemoWindowsForm
             sbyte index0fF = (sbyte)data.IndexOf("F");      //humidity
 
             // if character "A", "B" and "@" exxist in the data Package
-            if (index0fA != -1 && index0fB != -1 && index0fC != -1 && index0fD != -1 && index0fE != -1 && index0fF != -1  && index0f_startDataCharacter != -1 )
+            if (index0fA != -1 && /* index0fB != -1 && index0fC != -1 && index0fD != -1 && */ index0fE != -1 && index0fF != -1  && index0f_startDataCharacter != -1 )
             {
                 try
                 {
@@ -230,11 +230,11 @@ namespace DemoWindowsForm
 
                     //string str_day = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
                     string str_dow  = data.Substring(index0f_startDataCharacter + 1,
-                                                                           (index0fA - index0f_startDataCharacter) - 1);
+                                                                            (index0fA - index0f_startDataCharacter) - 1);
                     string str_day          = data.Substring(index0fA + 1, (index0fB - index0fA) - 1);
-                    string str_month        = data.Substring(index0fB + 1, (index0fC - index0fB) - 1);
-                    string str_year         = data.Substring(index0fC + 1, (index0fD - index0fC) - 1);
-                    string str_temperature  = data.Substring(index0fD + 1, (index0fE - index0fD) - 1);
+                    //string str_month        = data.Substring(index0fB + 1, (index0fC - index0fB) - 1);
+                    //string str_year         = data.Substring(index0fC + 1, (index0fD - index0fC) - 1);
+                    string str_temperature  = data.Substring(index0fB + 1, (index0fE - index0fB) - 1);
                     string str_humidity     = data.Substring(index0fE + 1, (index0fF - index0fE) - 1);
 
                     //time = Convert.ToDouble(str_time);
@@ -242,10 +242,11 @@ namespace DemoWindowsForm
                     //day = Convert.ToDouble(str_day);
                     temperature = Convert.ToDouble(str_temperature);
                     humidity = Convert.ToDouble(str_humidity);
+                    //day = Convert.ToDouble(str_dow);
 
                     //textBox1.Text = str_dow;
-                    label7.Text = String.Format("Ngày: {0}, {1} {2} {3} ", str_dow.ToString(),
-                        str_day.ToString(), str_month.ToString(), str_year.ToString());
+                    label7.Text = String.Format("Ngày: {0}, {1}", str_dow.ToString(), str_day.ToString());
+                    textBox1.Text = str_dow;
                     updateData = true;
                 }
                 catch (Exception)
@@ -264,6 +265,11 @@ namespace DemoWindowsForm
 
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void Show_Data(object sender, EventArgs e)
         {
             if (updateData == true) {
@@ -271,6 +277,7 @@ namespace DemoWindowsForm
 
                 //label6.Text = String.Format("Thời gian: {0}", time.ToString());
                 
+                //label7.Text = String.Format("Ngày: {0}", day.ToString());
                 label4.Text = String.Format("Nhiệt độ: {0}°C", temperature.ToString());
                 label5.Text = String.Format("Độ ẩm: {0}%RH", humidity.ToString());
             }

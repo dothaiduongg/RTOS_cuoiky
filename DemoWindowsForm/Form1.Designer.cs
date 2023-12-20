@@ -43,6 +43,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
             this.buttonConnect = new System.Windows.Forms.Button();
@@ -158,9 +159,9 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(9, 94);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(69, 25);
+            this.label7.Size = new System.Drawing.Size(109, 25);
             this.label7.TabIndex = 11;
-            this.label7.Text = "Ngày: ";
+            this.label7.Text = "Ngày: ..., ...";
             this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // label8
@@ -188,6 +189,7 @@
             // groupBox1
             // 
             this.groupBox1.CausesValidation = false;
+            this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
@@ -200,6 +202,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Result";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(220, 41);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 30);
+            this.textBox1.TabIndex = 12;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // groupBox2
             // 
@@ -319,6 +329,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

@@ -128,12 +128,14 @@ void getDate(char *psz)
       month = now.month();
   sprintf(psz, "%d %s %04d", day, mon2str(now.month(), szBuf, sizeof(szBuf)-1),now.year());
 
-  Current_Day = day;
-  Current_Month = mon2str(now.month(), szBuf, sizeof(szBuf)-1);
-  Current_Year = now.year();
-  Serial.print(Current_Day);        Serial.print("B");
-  Serial.print(Current_Month);      Serial.print("C");
-  Serial.print(Current_Year);       Serial.print("D");
+  // Current_Day = day;
+  // Current_Month = mon2str(now.month(), szBuf, sizeof(szBuf)-1);
+  // Current_Year = now.year();
+  Serial.print(psz);  Serial.print("B");
+  // Serial.print(Current_Day);        
+  // Serial.print(Current_Month);      Serial.print("C");
+  // Serial.print(Current_Year);       Serial.print("D");
+
   
 
   // Serial.print(Current_Day); 
@@ -201,6 +203,11 @@ void setup(void)
   getTime(szTime);
 }
 
+// void dateweek(){
+
+// }
+
+
 void loop(void)
 {
   static uint32_t lastTime = 0; // millis() memory
@@ -208,6 +215,7 @@ void loop(void)
   static bool flasher = false;  // seconds passing flasher
  
   P.displayAnimate();
+
 
   if (P.getZoneStatus(0))
   {
@@ -229,8 +237,8 @@ void loop(void)
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getDate(szMesg);
-        // Current_Day = getDate(szMesg);
-        // Serial.print(Current_Day); Serial.print("D");
+        // szDate = getDate(szMesg);
+        // Serial.print(szDate); Serial.print("B");
         // Serial.print("\n");
         // display++;
         break;
