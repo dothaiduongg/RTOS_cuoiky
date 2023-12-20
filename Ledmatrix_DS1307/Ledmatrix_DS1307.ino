@@ -131,7 +131,7 @@ void getDate(char *psz)
   // Current_Day = day;
   // Current_Month = mon2str(now.month(), szBuf, sizeof(szBuf)-1);
   // Current_Year = now.year();
-  Serial.print(psz);  Serial.print("B");
+  Serial.print(psz); Serial.print("B");
   // Serial.print(Current_Day);        
   // Serial.print(Current_Month);      Serial.print("C");
   // Serial.print(Current_Year);       Serial.print("D");
