@@ -42,7 +42,8 @@ char WeatherTh[MAX_MESG+1] = "";
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 String commandString = "";
-
+String dulieu = "";
+// String dulieu = "";
 uint16_t  h, m, s;
 uint8_t dow;
 int  day;
@@ -54,10 +55,6 @@ char szsecond[4];    // ss
 char szMesg[MAX_MESG+1] = "";
 
 String Current_Dow;
-String Current_Day;
-String Current_Month;
-String Current_Year;
-char szDate[12];
 
 RTC_DS1307 rtc;
 uint8_t degC[] = { 6, 3, 3, 56, 68, 68, 68 }; // Deg C
@@ -166,47 +163,11 @@ void getTemperatur(char *psz)
           
 }
 
-// void checkCommand()
+// void gettext(char *ps)
 // {
-//   if(stringComplete)
-//   {
-//     stringComplete = false;
-//     getCommand();
-//     if(commandString.equals("TEXT"))
-//     {
-//       String text = getTextToPrint();
 
-
-//     }
-//   }
 // }
 
-// void getCommand()
-// {
-//   if(inputString.length()>0)
-//   {
-//      commandString = inputString.substring(1,5);
-//   }
-// }
-// String getTextToPrint()
-// {
-//   String Message = inputString.substring(5,inputString.length()-2);
-//   return Message;
-// }
-
-// void serialEvent() {
-//   while (Serial.available()) {
-//     // get the new byte:
-//     char inChar = (char)Serial.read();
-//     // add it to the inputString:
-//     inputString += inChar;
-//     // if the incoming character is a newline, set a flag
-//     // so the main loop can do something about it:
-//     if (inChar == '\n') {
-//       stringComplete = true;
-//     }
-//   }
-// }
 void setup(void)
 {
     Serial.begin(9600);
@@ -221,7 +182,7 @@ void setup(void)
 
   // automatically sets the RTC to the date & time on PC this sketch was compiled
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-
+  // dulieu = Serial.readStringUntil('\n');
 
   delay(3000);
   getTimentp();
@@ -249,7 +210,8 @@ void loop(void)
   static uint32_t lastTime = 0; // millis() memory
   static uint8_t  display = 0;  // current display mode
   static bool flasher = false;  // seconds passing flasher
-  String dulieu = "";
+  
+  // dulieu = Serial.readStringUntil('\n');
   P.displayAnimate();
 
 
@@ -293,12 +255,14 @@ void loop(void)
         break;
 
       default: // text
+        // dulieu = Serial.readStringUntil('\n');
+        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         if (Serial.available()>0)
         {
           dulieu = Serial.readStringUntil('\n');
-          P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-          strcpy(szMesg, dulieu.c_str());
         }
+        inputString = dulieu;
+        strcpy(szMesg, inputString.c_str());
         display = 0;
         break;
     }

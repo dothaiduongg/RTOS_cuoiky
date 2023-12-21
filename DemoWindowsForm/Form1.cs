@@ -182,6 +182,7 @@ namespace DemoWindowsForm
         private void button2_Click_1(object sender, EventArgs e)
         {
             sendtext.Text = "";
+            //serCOM.WriteLine("STOP_DISPLAY");
         }
 
         private void label4_Click(object sender, EventArgs e)
@@ -243,6 +244,11 @@ namespace DemoWindowsForm
         }
 
         private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void sendtext_TextChanged(object sender, EventArgs e)
         {
 
         }
