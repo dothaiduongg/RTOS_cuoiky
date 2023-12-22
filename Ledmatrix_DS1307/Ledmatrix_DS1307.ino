@@ -163,10 +163,35 @@ void getTemperatur(char *psz)
           
 }
 
-// void gettext(char *ps)
-// {
+void checkAndPrintEffect(String effect) {
 
-// }
+  if (effect == "Scroll Up Left") 
+  {
+    P.setTextEffect(0, PA_SCROLL_UP_LEFT, PA_SCROLL_UP_LEFT);
+  }
+//
+  else if (effect == "Scroll Right") 
+  {
+    P.setTextEffect(0, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
+  }
+//
+    else if (effect == "Scroll Down") 
+  {
+    P.setTextEffect(0, PA_SCROLL_DOWN, PA_SCROLL_UP);
+  }
+//
+    else if (effect == "Opening Cursor") 
+  {
+    P.setTextEffect(0, PA_OPENING_CURSOR, PA_OPENING_CURSOR);
+  }
+//
+    else if (effect == "Scroll Slice") 
+  {
+    P.setTextEffect(0, PA_SLICE, PA_SLICE);
+  }
+  
+  // Thêm các điều kiện khác cho các hiệu ứng khác
+}
 
 void setup(void)
 {
@@ -192,6 +217,8 @@ void setup(void)
   P.setZone(0, 0, 3);
   P.setZone(1, 4, 4);
   P.setZone(2, 5, 7);
+
+
   P.setFont(1, numeric7Seg);
   P.setFont(2, numeric7Se);
   P.displayZoneText(0, szMesg, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
@@ -256,7 +283,7 @@ void loop(void)
 
       default: // text
         // dulieu = Serial.readStringUntil('\n');
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        P.setTextEffect(0, PA_SCROLL_DOWN_RIGHT, PA_SCROLL_DOWN_RIGHT);
         if (Serial.available()>0)
         {
           dulieu = Serial.readStringUntil('\n');

@@ -29,7 +29,12 @@ namespace DemoWindowsForm
             String[] Baudrate = { "1200", "2400", "4800", "9600", "19200", "115200" };
             cboBaudrate.Items.AddRange(Baudrate);
             Control.CheckForIllegalCrossThreadCalls = false;
-            
+            comboBox1.Items.Add("None");
+            comboBox1.Items.Add("Scroll Right");
+            comboBox1.Items.Add("Scroll Down");
+            comboBox1.Items.Add("Scroll Up left");
+            comboBox1.Items.Add("Opening Cursor");
+            comboBox1.Items.Add("Slice");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -152,6 +157,7 @@ namespace DemoWindowsForm
 
         private void enableControl()
         {
+            label2.Enabled = true;
             label3.Enabled = true;
             label4.Enabled = true;
             label5.Enabled = true;
@@ -161,12 +167,14 @@ namespace DemoWindowsForm
             sendtext.Enabled = true;
             button1.Enabled = true;
             button2.Enabled = true;
+            comboBox1.Enabled = true;
             groupBox1.Enabled = true;
             //.Enabled = true;
         }
 
         private void disenableControl()
         {
+            label2.Enabled = false;
             label3.Enabled = false;
             label4.Enabled = false;
             label5.Enabled = false;
@@ -176,6 +184,7 @@ namespace DemoWindowsForm
             sendtext.Enabled = false;
             button1.Enabled = false;
             button2.Enabled = false;
+            comboBox1.Enabled = false;
             groupBox1.Enabled = false;            //groupBox2.Enabled = false;
         }
 
@@ -249,6 +258,11 @@ namespace DemoWindowsForm
         }
 
         private void sendtext_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click_1(object sender, EventArgs e)
         {
 
         }
