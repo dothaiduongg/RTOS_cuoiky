@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using System.Net.NetworkInformation;
+using System.Messaging;
 
 namespace DemoWindowsForm
 {
@@ -79,8 +80,10 @@ namespace DemoWindowsForm
             }
             else
             {
-            string dulieu = sendtext.Text;
-            serCOM.Write(dulieu);
+                string dulieu = sendtext.Text;
+                string selectedEffect = comboBox1.SelectedItem.ToString();
+                serCOM.Write($"{dulieu}@{selectedEffect}");
+                //serCOM.Write(dulieu);
             }
         }
 
