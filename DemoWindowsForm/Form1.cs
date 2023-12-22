@@ -80,10 +80,20 @@ namespace DemoWindowsForm
             }
             else
             {
-                string dulieu = sendtext.Text;
-                string selectedEffect = comboBox1.SelectedItem.ToString();
-                serCOM.Write($"{dulieu}@{selectedEffect}");
-                //serCOM.Write(dulieu);
+                //string dulieu = sendtext.Text;
+                //string selectedEffect = comboBox1.SelectedItem.ToString();
+
+                //serCOM.Write("Te:" + dulieu + "|" + "Ef:" + selectedEffect);
+
+                //serCOM.Write("Text:"+dulieu);
+                //serCOM.Write("Effect:"+selectedEffect);
+
+                string textData = sendtext.Text;
+                string effectData = comboBox1.SelectedItem.ToString(); // Lấy hiệu ứng từ ComboBox
+
+                // Gửi dữ liệu đến Arduino
+                string sendData = $"{textData}@{effectData}\n";
+                serCOM.Write(sendData);
             }
         }
 
@@ -266,6 +276,11 @@ namespace DemoWindowsForm
         }
 
         private void label2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

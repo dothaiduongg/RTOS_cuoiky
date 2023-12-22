@@ -29,7 +29,7 @@ DHT dht(DHTPIN, DHTTYPE);
 // Arbitrary output pins
 MD_Parola P = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
-#define SPEED_TIME  30
+#define SPEED_TIME  50
 #define PAUSE_TIME  0
 #define MAX_MESG  75
 
@@ -42,7 +42,11 @@ char WeatherTh[MAX_MESG+1] = "";
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 String commandString = "";
-String dulieu = "";
+String dulieu;
+String selectEffect;
+// String* pDulieu = nullptr; // Con trỏ toàn cục
+// String[] parts = dulieu.Split('@');
+
 // String dulieu = "";
 uint16_t  h, m, s;
 uint8_t dow;
@@ -163,35 +167,41 @@ void getTemperatur(char *psz)
           
 }
 
-void checkAndPrintEffect(String effect) {
+void checkAndPrintEffect(String c) {
 
-  if (effect == "Scroll Up left") 
+  if (c == "Scroll Up left") 
   {
     P.setTextEffect(1, PA_SCROLL_UP_LEFT, PA_SCROLL_UP_LEFT);
+    // strcpy(szMesgt, pDulieu->c_str());
   }
 //
-  else if (effect == "Scroll Right") 
+  else if (c == "Scroll Right") 
   {
     P.setTextEffect(1, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
+    // strcpy(szMesgt, pDulieu->c_str());
   }
 //
-    else if (effect == "Scroll Down") 
+    else if (c == "Scroll Down") 
   {
-    P.setTextEffect(1, PA_SCROLL_DOWN, PA_SCROLL_UP);
+    P.setTextEffect(1, PA_SCROLL_DOWN, PA_SCROLL_DOWN);
+    // strcpy(szMesgt, pDulieu->c_str());
   }
 //
-    else if (effect == "Opening Cursor") 
+    else if (c == "Opening Cursor") 
   {
     P.setTextEffect(1, PA_OPENING_CURSOR, PA_OPENING_CURSOR);
+    // strcpy(szMesgt, pDulieu->c_str());
   }
 //
-    else if (effect == "Slice") 
+    else if (c == "Slice") 
   {
     P.setTextEffect(1, PA_SLICE, PA_SLICE);
+    // strcpy(szMesgt, pDulieu->c_str());
   }
-      else if (effect == "None") 
+      else if (c == "None") 
   {
     P.setTextEffect(1, PA_PRINT, PA_PRINT);
+
   }
   
   // Thêm các điều kiện khác cho các hiệu ứng khác
@@ -248,33 +258,23 @@ void loop(void)
 
 
   if (P.getZoneStatus(1)){
-    if (Serial.available()>0){
-      dulieu = Serial.readStringUntil('\n');
-      // inputString = dulieu;
-      if (dulieu == "STOP_DISPLAY@") {
-        // Dừng hiển thị đoạn text
-        dulieu = "End";
-      } 
-      else {
-        int separatorIndex = dulieu.indexOf('@');
-        int length = dulieu.length();
-        inputString = dulieu.substring(0, separatorIndex);
-        String effect = dulieu.substring(separatorIndex,length);
-
-        strcpy(szMesgt, inputString.c_str());
-
-        // Kiểm tra và in ra hiệu ứng
-        checkAndPrintEffect(effect);
-        // P.setTextEffect(1, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-        Serial.print(effect);
-        Serial.print(inputString);
-        
-        
-      }
-      
-    // P.displayReset(1);
+    if (Serial.available()>0)
+    {
+      String command = Serial.readStringUntil('\n');
+    
+    // Xử lý lệnh (assumes format: "TEXT@EFFECT")
+    int separatorIndex = command.indexOf('@');
+    if (separatorIndex != -1) {
+      dulieu = command.substring(0, separatorIndex);
+      selectEffect = command.substring(separatorIndex + 1);
+      strcpy(szMesgt, dulieu.c_str());
+      checkAndPrintEffect(selectEffect);
     }
-  }
+    }
+
+   P.displayReset(1);
+}
+
         
 
   if (P.getZoneStatus(0))
@@ -322,21 +322,6 @@ void loop(void)
 
     P.displayReset(0);
   }
-
-  // if (P.getZoneStatus(1)){
-    
-  //   if (Serial.available()>0)
-  //   {
-  //     dulieu = Serial.readStringUntil('\n');
-  //     inputString = dulieu;
-  //     strcpy(szMesgt, inputString.c_str());
-  //     P.setTextEffect(1, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-  //   }
-  // }
-  // dulieu = Serial.readStringUntil('\n');
-
-
-  // display = 0;
 
   
   // Finally, adjust the time string if we have to
