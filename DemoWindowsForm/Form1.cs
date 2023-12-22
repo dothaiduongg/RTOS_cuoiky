@@ -34,7 +34,7 @@ namespace DemoWindowsForm
             comboBox1.Items.Add("Scroll Right");
             comboBox1.Items.Add("Scroll Down");
             comboBox1.Items.Add("Scroll Up left");
-            comboBox1.Items.Add("Opening Cursor");
+            comboBox1.Items.Add("Random");
             comboBox1.Items.Add("Slice");
         }
 

@@ -187,9 +187,9 @@ void checkAndPrintEffect(String c) {
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
-    else if (c == "Opening Cursor") 
+    else if (c == "Random") 
   {
-    P.setTextEffect(1, PA_OPENING_CURSOR, PA_OPENING_CURSOR);
+    P.setTextEffect(1, PA_RANDOM, PA_RANDOM);
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
