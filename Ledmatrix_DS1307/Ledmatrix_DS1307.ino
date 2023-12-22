@@ -14,7 +14,7 @@
 // NOTE: These pin numbers will probably not work with your hardware and may
 // need to be adapted
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 8
+#define MAX_DEVICES 12
 
 #define CLK_PIN   18 // or SCK
 #define DATA_PIN  19 // or MOSI
@@ -29,7 +29,7 @@ DHT dht(DHTPIN, DHTTYPE);
 // Arbitrary output pins
 MD_Parola P = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
-#define SPEED_TIME  65
+#define SPEED_TIME  30
 #define PAUSE_TIME  0
 #define MAX_MESG  75
 
@@ -53,7 +53,7 @@ String  year;
 char szTime[9];    // mm:ss\0
 char szsecond[4];    // ss
 char szMesg[MAX_MESG+1] = "";
-
+char szMesgt[MAX_MESG+1] = "";
 String Current_Dow;
 
 RTC_DS1307 rtc;
@@ -165,29 +165,33 @@ void getTemperatur(char *psz)
 
 void checkAndPrintEffect(String effect) {
 
-  if (effect == "Scroll Up Left") 
+  if (effect == "Scroll Up left") 
   {
-    P.setTextEffect(0, PA_SCROLL_UP_LEFT, PA_SCROLL_UP_LEFT);
+    P.setTextEffect(1, PA_SCROLL_UP_LEFT, PA_SCROLL_UP_LEFT);
   }
 //
   else if (effect == "Scroll Right") 
   {
-    P.setTextEffect(0, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
+    P.setTextEffect(1, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
   }
 //
     else if (effect == "Scroll Down") 
   {
-    P.setTextEffect(0, PA_SCROLL_DOWN, PA_SCROLL_UP);
+    P.setTextEffect(1, PA_SCROLL_DOWN, PA_SCROLL_UP);
   }
 //
     else if (effect == "Opening Cursor") 
   {
-    P.setTextEffect(0, PA_OPENING_CURSOR, PA_OPENING_CURSOR);
+    P.setTextEffect(1, PA_OPENING_CURSOR, PA_OPENING_CURSOR);
   }
 //
-    else if (effect == "Scroll Slice") 
+    else if (effect == "Slice") 
   {
-    P.setTextEffect(0, PA_SLICE, PA_SLICE);
+    P.setTextEffect(1, PA_SLICE, PA_SLICE);
+  }
+      else if (effect == "None") 
+  {
+    P.setTextEffect(1, PA_PRINT, PA_PRINT);
   }
   
   // Thêm các điều kiện khác cho các hiệu ứng khác
@@ -211,20 +215,22 @@ void setup(void)
 
   delay(3000);
   getTimentp();
-  P.begin(3);
+  P.begin(4);
   P.setInvert(false);
 
   P.setZone(0, 0, 3);
-  P.setZone(1, 4, 4);
-  P.setZone(2, 5, 7);
+  P.setZone(1, 4, 7);
+  P.setZone(2, 8, 8);
+  P.setZone(3, 9, 11);
 
 
-  P.setFont(1, numeric7Seg);
-  P.setFont(2, numeric7Se);
+  P.setFont(2, numeric7Seg);
+  P.setFont(3, numeric7Se);
   P.displayZoneText(0, szMesg, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
-  P.displayZoneText(1, szsecond, PA_LEFT, SPEED_TIME, 0, PA_PRINT, PA_NO_EFFECT);
-  P.displayZoneText(2, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-
+  P.displayZoneText(1, szMesgt, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
+  P.displayZoneText(2, szsecond, PA_LEFT, SPEED_TIME, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayZoneText(3, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+ 
   P.addChar('$', degC);
   dht.begin();
   getDate(szMesg);
@@ -237,21 +243,49 @@ void loop(void)
   static uint32_t lastTime = 0; // millis() memory
   static uint8_t  display = 0;  // current display mode
   static bool flasher = false;  // seconds passing flasher
-  
-  // dulieu = Serial.readStringUntil('\n');
+
   P.displayAnimate();
 
 
+  if (P.getZoneStatus(1)){
+    if (Serial.available()>0){
+      dulieu = Serial.readStringUntil('\n');
+      // inputString = dulieu;
+      if (dulieu == "STOP_DISPLAY@") {
+        // Dừng hiển thị đoạn text
+        dulieu = "End";
+      } 
+      else {
+        int separatorIndex = dulieu.indexOf('@');
+        int length = dulieu.length();
+        inputString = dulieu.substring(0, separatorIndex);
+        String effect = dulieu.substring(separatorIndex,length);
+
+        strcpy(szMesgt, inputString.c_str());
+
+        // Kiểm tra và in ra hiệu ứng
+        checkAndPrintEffect(effect);
+        // P.setTextEffect(1, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        Serial.print(effect);
+        Serial.print(inputString);
+        
+        
+      }
+      
+    // P.displayReset(1);
+    }
+  }
+        
+
   if (P.getZoneStatus(0))
   {
+
     switch (display)
     {
       case 0: // day of week
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         dow2str(dow, szMesg, MAX_MESG);
-
-
         Current_Dow = dow2str(dow, szMesg, MAX_MESG);
         Serial.print("@");
         Serial.print(Current_Dow); Serial.print("A");
@@ -275,28 +309,36 @@ void loop(void)
         getTemperatur(szMesg);
         break;
 
-      case 3:  // Relative Humidity
+      default:  // Relative Humidity
         P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-        display++;
+        display=0;
         getHumidit(szMesg);
         break;
 
-      default: // text
-        // dulieu = Serial.readStringUntil('\n');
-        P.setTextEffect(0, PA_SCROLL_DOWN_RIGHT, PA_SCROLL_DOWN_RIGHT);
-        if (Serial.available()>0)
-        {
-          dulieu = Serial.readStringUntil('\n');
-        }
-        inputString = dulieu;
-        strcpy(szMesg, inputString.c_str());
-        display = 0;
-        break;
+      // default: // text
+
+      //   break;
     }
 
     P.displayReset(0);
   }
 
+  // if (P.getZoneStatus(1)){
+    
+  //   if (Serial.available()>0)
+  //   {
+  //     dulieu = Serial.readStringUntil('\n');
+  //     inputString = dulieu;
+  //     strcpy(szMesgt, inputString.c_str());
+  //     P.setTextEffect(1, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+  //   }
+  // }
+  // dulieu = Serial.readStringUntil('\n');
+
+
+  // display = 0;
+
+  
   // Finally, adjust the time string if we have to
   if (millis() - lastTime >= 1000)
   {
@@ -305,8 +347,8 @@ void loop(void)
     getTime(szTime, flasher);
     flasher = !flasher;
 
-    P.displayReset(1);
     P.displayReset(2);
+    P.displayReset(3);
   }
 }
 
