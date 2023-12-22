@@ -169,38 +169,38 @@ void getTemperatur(char *psz)
 
 void checkAndPrintEffect(String c) {
 
-  if (c == "Scroll Up left") 
+  if (c == "Wipe") 
   {
-    P.setTextEffect(1, PA_SCROLL_UP_LEFT, PA_SCROLL_UP_LEFT);
+    P.setTextEffect(2, PA_WIPE, PA_WIPE);
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
   else if (c == "Scroll Right") 
   {
-    P.setTextEffect(1, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
+    P.setTextEffect(2, PA_SCROLL_RIGHT, PA_SCROLL_RIGHT);
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
     else if (c == "Scroll Down") 
   {
-    P.setTextEffect(1, PA_SCROLL_DOWN, PA_SCROLL_DOWN);
+    P.setTextEffect(2, PA_SCROLL_DOWN, PA_SCROLL_DOWN);
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
     else if (c == "Random") 
   {
-    P.setTextEffect(1, PA_RANDOM, PA_RANDOM);
+    P.setTextEffect(2, PA_RANDOM, PA_RANDOM);
     // strcpy(szMesgt, pDulieu->c_str());
   }
 //
     else if (c == "Slice") 
   {
-    P.setTextEffect(1, PA_SLICE, PA_SLICE);
+    P.setTextEffect(2, PA_SLICE, PA_SLICE);
     // strcpy(szMesgt, pDulieu->c_str());
   }
       else if (c == "None") 
   {
-    P.setTextEffect(1, PA_PRINT, PA_PRINT);
+    P.setTextEffect(2, PA_PRINT, PA_PRINT);
 
   }
   
@@ -228,18 +228,18 @@ void setup(void)
   P.begin(4);
   P.setInvert(false);
 
-  P.setZone(0, 0, 3);
-  P.setZone(1, 4, 7);
-  P.setZone(2, 8, 8);
-  P.setZone(3, 9, 11);
+  P.setZone(0, 0, 0);
+  P.setZone(1, 1, 3);
+  P.setZone(2, 4, 7);
+  P.setZone(3, 8, 11);
 
 
-  P.setFont(2, numeric7Seg);
-  P.setFont(3, numeric7Se);
-  P.displayZoneText(0, szMesg, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
-  P.displayZoneText(1, szMesgt, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
-  P.displayZoneText(2, szsecond, PA_LEFT, SPEED_TIME, 0, PA_PRINT, PA_NO_EFFECT);
-  P.displayZoneText(3, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  P.setFont(0, numeric7Seg);
+  P.setFont(1, numeric7Se);
+  P.displayZoneText(3, szMesg, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
+  P.displayZoneText(2, szMesgt, PA_CENTER, SPEED_TIME, 0, PA_PRINT, PA_SCROLL_LEFT);
+  P.displayZoneText(0, szsecond, PA_LEFT, SPEED_TIME, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayZoneText(1, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
  
   P.addChar('$', degC);
   dht.begin();
@@ -257,7 +257,7 @@ void loop(void)
   P.displayAnimate();
 
 
-  if (P.getZoneStatus(1)){
+  if (P.getZoneStatus(2)){
     if (Serial.available()>0)
     {
       String command = Serial.readStringUntil('\n');
@@ -272,18 +272,18 @@ void loop(void)
     }
     }
 
-   P.displayReset(1);
+   P.displayReset(2);
 }
 
         
 
-  if (P.getZoneStatus(0))
+  if (P.getZoneStatus(3))
   {
 
     switch (display)
     {
       case 0: // day of week
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        P.setTextEffect(3, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         dow2str(dow, szMesg, MAX_MESG);
         Current_Dow = dow2str(dow, szMesg, MAX_MESG);
@@ -293,7 +293,7 @@ void loop(void)
         break;
 
       case 1: // Calendar
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        P.setTextEffect(3, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getDate(szMesg);
         // szDate = getDate(szMesg);
@@ -304,13 +304,13 @@ void loop(void)
 
 
       case 2: // Temperature deg C
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        P.setTextEffect(3, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display++;
         getTemperatur(szMesg);
         break;
 
       default:  // Relative Humidity
-        P.setTextEffect(0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+        P.setTextEffect(3, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
         display=0;
         getHumidit(szMesg);
         break;
@@ -320,7 +320,7 @@ void loop(void)
       //   break;
     }
 
-    P.displayReset(0);
+    P.displayReset(3);
   }
 
   
@@ -332,8 +332,8 @@ void loop(void)
     getTime(szTime, flasher);
     flasher = !flasher;
 
-    P.displayReset(2);
-    P.displayReset(3);
+    P.displayReset(0);
+    P.displayReset(1);
   }
 }
 

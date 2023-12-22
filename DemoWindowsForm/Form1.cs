@@ -33,9 +33,10 @@ namespace DemoWindowsForm
             comboBox1.Items.Add("None");
             comboBox1.Items.Add("Scroll Right");
             comboBox1.Items.Add("Scroll Down");
-            comboBox1.Items.Add("Scroll Up left");
+            comboBox1.Items.Add("Wipe");
             comboBox1.Items.Add("Random");
             comboBox1.Items.Add("Slice");
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -267,7 +268,6 @@ namespace DemoWindowsForm
 
         private void groupBox3_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void sendtext_TextChanged(object sender, EventArgs e)
