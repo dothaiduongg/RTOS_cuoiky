@@ -225,9 +225,9 @@ void setup(void)
 
   delay(3000);
   getTimentp();
-  P.begin(4);
+ 
   P.setInvert(false);
-
+ P.begin(4);
   P.setZone(0, 0, 0);
   P.setZone(1, 1, 3);
   P.setZone(2, 4, 7);
